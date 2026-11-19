@@ -1,9 +1,9 @@
-# Create GitHub repository and push (requires: gh auth login)
+# Push this repository (requires: gh auth login). The target repo already exists.
 param(
-    [string]$RepoName = "cursor-diagstack-skills",
+    [string]$RepoName = "Cursor-Automotive-Electronics-Annotation-Standards",
     [ValidateSet("public", "private")]
     [string]$Visibility = "public",
-    [string]$Description = "Cursor Agent Skills for PK2C DiagStack C/H comment style"
+    [string]$Description = "Cursor Agent Skills for Automotive Electronics Annotation Standards (AEAS): AUTOSAR Classic names, MISRA C, and comment style."
 )
 
 $ErrorActionPreference = "Stop"

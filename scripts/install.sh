@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Install art (ART) skill to user skill dirs Cursor actually scans.
+# Install aeas skill to user skill dirs Cursor actually scans.
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-SKILL_NAME="art"
+SKILL_NAME="aeas"
 SRC="${REPO_ROOT}/skills/${SKILL_NAME}"
 
 if [[ ! -d "${SRC}" ]]; then
@@ -15,42 +15,29 @@ install_to() {
   local root="$1"
   local dst="${root}/${SKILL_NAME}"
   mkdir -p "${root}"
+  # Retired dirs. Never delete the target itself.
+  for legacy in ass ASS Ass ART art artstd art_std dsc-a dsc-b diagstack-c-comment-style; do
+    local p="${root}/${legacy}"
+    if [[ -e "${p}" || -L "${p}" ]]; then
+      if [[ "${p}" != "${dst}" ]]; then
+        rm -rf "${p}"
+        echo "Removed legacy: ${p}"
+      fi
+    fi
+  done
   rm -rf "${dst}"
-  # Retired dirs. ART is removed only when it is not dst.
-  rm -rf "${root}/ass" "${root}/ASS" "${root}/Ass" \
-    "${root}/dsc-a" "${root}/dsc-b" "${root}/diagstack-c-comment-style"
-  if [[ -d "${root}/ART" && "${root}/ART" != "${dst}" ]]; then
-    rm -rf "${root}/ART"
-  fi
   cp -R "${SRC}" "${dst}"
   echo "Installed: ${dst}"
   test -f "${dst}/SKILL.md" || { echo "ERROR: SKILL.md missing at ${dst}" >&2; exit 1; }
   test -f "${dst}/AUTHOR" || { echo "ERROR: AUTHOR missing at ${dst}" >&2; exit 1; }
 }
 
-# Cursor discovers both of these user-level roots
-install_alias() {
-  local root="$1"
-  local name="$2"
-  local src="${REPO_ROOT}/skills/${name}"
-  local dst="${root}/${name}"
-  mkdir -p "${root}"
-  rm -rf "${dst}"
-  cp -R "${src}" "${dst}"
-  test -f "${dst}/SKILL.md" || { echo "ERROR: SKILL.md missing at ${dst}" >&2; exit 1; }
-  echo "Installed: ${dst}"
-}
-
 for root in "${HOME}/.cursor/skills" "${HOME}/.agents/skills"; do
   install_to "${root}"
-  install_alias "${root}" "artstd"
-  install_alias "${root}" "art_std"
 done
 
 echo
 echo "Verify:"
-echo "  ls ~/.cursor/skills/art/SKILL.md"
-echo "  ls ~/.cursor/skills/artstd/SKILL.md"
-echo "  ls ~/.cursor/skills/art_std/SKILL.md"
+echo "  ls ~/.cursor/skills/aeas/SKILL.md"
 echo
-echo "Then FULLY quit Cursor and reopen. New chat: @art or /art. Rename: @ArtStd or /ArtStd"
+echo "Then FULLY quit Cursor and reopen. New chat: @aeas or /aeas"

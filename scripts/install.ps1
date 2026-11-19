@@ -1,10 +1,10 @@
-# Install art (ART) skill to user skill dirs Cursor actually scans.
+# Install aeas skill to user skill dirs Cursor actually scans.
 param(
     [string]$RepoRoot = (Split-Path $PSScriptRoot -Parent)
 )
 
 $ErrorActionPreference = "Stop"
-$SkillName = "art"
+$SkillName = "aeas"
 $SkillSrc = Join-Path $RepoRoot "skills\$SkillName"
 
 if (-not (Test-Path $SkillSrc)) {
@@ -20,7 +20,7 @@ function Install-To([string]$Root) {
     $dst = Join-Path $Root $SkillName
     $keepKey = Get-PathKey $dst
 
-    foreach ($legacy in @("ass", "ASS", "Ass", "ART", "dsc-a", "dsc-b", "diagstack-c-comment-style")) {
+    foreach ($legacy in @("ass", "ASS", "Ass", "ART", "art", "artstd", "art_std", "dsc-a", "dsc-b", "diagstack-c-comment-style")) {
         $p = Join-Path $Root $legacy
         if (-not (Test-Path $p)) { continue }
         if ((Get-PathKey $p) -eq $keepKey) {
@@ -48,34 +48,15 @@ function Install-To([string]$Root) {
     Write-Host "Installed: $dst"
 }
 
-function Install-Alias([string]$Root, [string]$Name) {
-    $src = Join-Path $RepoRoot "skills\$Name"
-    if (-not (Test-Path (Join-Path $src "SKILL.md"))) {
-        Write-Error "Skill source not found: $src"
-    }
-    $dst = Join-Path $Root $Name
-    if (Test-Path $dst) { Remove-Item -Recurse -Force $dst }
-    New-Item -ItemType Directory -Force -Path $dst | Out-Null
-    Copy-Item -Recurse -Force (Join-Path $src "*") $dst
-    if (-not (Test-Path (Join-Path $dst "SKILL.md"))) {
-        Write-Error "SKILL.md missing after install: $dst"
-    }
-    Write-Host "Installed: $dst"
-}
-
 foreach ($root in @(
     (Join-Path $env:USERPROFILE ".cursor\skills"),
     (Join-Path $env:USERPROFILE ".agents\skills")
 )) {
     Install-To $root
-    Install-Alias $root "artstd"
-    Install-Alias $root "art_std"
 }
 
 Write-Host ""
 Write-Host "Verify with:"
-Write-Host "  dir `$env:USERPROFILE\.cursor\skills\art\SKILL.md"
-Write-Host "  dir `$env:USERPROFILE\.cursor\skills\artstd\SKILL.md"
-Write-Host "  dir `$env:USERPROFILE\.cursor\skills\art_std\SKILL.md"
+Write-Host "  dir `$env:USERPROFILE\.cursor\skills\aeas\SKILL.md"
 Write-Host ""
-Write-Host "Then FULLY quit Cursor and reopen. New chat: @art or /art. Rename: @ArtStd or /ArtStd"
+Write-Host "Then FULLY quit Cursor and reopen. New chat: @aeas or /aeas"

@@ -1,59 +1,64 @@
-# DiagStack 注释示例（art / ART skill）
+# AEAS 注释与命名示例（aeas skill）
 
-调用 **@art** / **/art**（不区分大小写）时：先按本示例加齐注释，再按 SKILL.md 中 MISRA 规则改码。要改已有公开函数名时用 **@ArtStd** 或 **/ArtStd**（也可写成 `@artstd`、`/art_std`，大小写不限）。没有 `@` 或 `/` 的 `ArtStd` 不触发。
+调用 **@aeas** / **/aeas**（不区分大小写）时，必须按这个顺序，不能反过来：
 
-> 磁盘目录必须是小写 `art/`。
+1. 先按代码风格把代码写完或改完：公开函数用 AUTOSAR Classic 命名，并按 SKILL.md 中的 MISRA 规则改码
+2. 代码完成后再按本示例补齐注释
+
+没有「只加注释、不改函数名」的模式。
+
+> 磁盘目录必须是小写 `aeas/`。
 >
 > 默认作者是 `YYH`（`AUTHOR` 文件）。原先没有注释的文件，初始发布版本作者写 `未知`，不要写成后来补注释的人。
 
 ## 作者名示例
 
-默认文件 `skills/art/AUTHOR`（安装后与 `SKILL.md` 同级）：
+默认文件 `skills/aeas/AUTHOR`（安装后与 `SKILL.md` 同级）：
 
 ```text
 YYH
 ```
 
-不写作者、也不建 `.art-author` 时，新建文件用 `YYH`。
+不写作者、也不建 `.aeas-author` 时，新建文件用 `YYH`。
 
 ### 永久改成 ZS，并同步云端和本机
 
-把仓库里的 `skills/art/AUTHOR` 改成一行 `ZS`，然后安装。脚本会把同一份写到 Cursor 扫描的两个目录。云端机器和本机各执行一次。
+把仓库里的 `skills/aeas/AUTHOR` 改成一行 `ZS`，然后安装。脚本会把同一份写到 Cursor 扫描的两个目录。云端机器和本机各执行一次。
 
 Linux / macOS（含云端）：
 
 ```bash
-printf '%s\n' 'ZS' > skills/art/AUTHOR
+printf '%s\n' 'ZS' > skills/aeas/AUTHOR
 ./scripts/install.sh
 ```
 
 Windows 本机：
 
 ```powershell
-Set-Content -Path skills\art\AUTHOR -Value "ZS" -Encoding ascii
+Set-Content -Path skills\aeas\AUTHOR -Value "ZS" -Encoding ascii
 .\scripts\install.ps1
 ```
 
 装完这两处都是 `ZS`：
 
-- `%USERPROFILE%\.cursor\skills\art\AUTHOR`
-- `%USERPROFILE%\.agents\skills\art\AUTHOR`
+- `%USERPROFILE%\.cursor\skills\aeas\AUTHOR`
+- `%USERPROFILE%\.agents\skills\aeas\AUTHOR`
 
 ### 只改当前工程
 
-工程根目录 `.art-author` 写一行 `ZS`。不改 `AUTHOR`，所以云端和其他工程仍是 `YYH`。
+工程根目录 `.aeas-author` 写一行 `ZS`。不改 `AUTHOR`，所以云端和其他工程仍是 `YYH`。
 
 ### 只改这一轮
 
 `AUTHOR` 仍是 `YYH`，本轮记成 `LS`：
 
 ```text
-@art 作者 LS 给 Can.c 补注释
+@aeas 作者 LS 给 Can.c 补注释
 ```
 
 ### 默认 YYH，新建文件
 
-对话：`@art 新建 Can.c`
+对话：`@aeas 新建 Can.c`
 
 ```c
 /*==============================================================================
@@ -81,7 +86,7 @@ Set-Content -Path skills\art\AUTHOR -Value "ZS" -Encoding ascii
 
 ### 默认 YYH，旧文件原来没有注释
 
-`Can.c` 里已有 `Can_Init`，没有文件头。对话：`@art 给 Can.c 补注释`
+`Can.c` 里已有 `Can_Init`，没有文件头。对话：`@aeas 给 Can.c 补注释`
 
 文件头和旧函数不把 `YYH` 写成初始作者；`YYH` 只出现在本次修订行。本轮新写的函数才用 `YYH`。
 
@@ -120,33 +125,40 @@ Set-Content -Path skills\art\AUTHOR -Value "ZS" -Encoding ascii
 
 `AUTHOR` 改成 `ZS` 后，上面新建和本次修订行里的 `YYH` 换成 `ZS`。初始发布版本那一行仍然是 `未知`。
 
+## 同一天的修订记录
+
+同一天对同一文件的改动只保留一条修订记录，不要再追加一行，也不要升版本号。把本次说明合并进当天已有的那一行；若当天作者不同，作者列写成 `YYH, ZS` 这样并列。
+
+已有当天记录时不要再写成：
+
+```c
+* 修订记录 :
+* V1.0  未知        未知  初始发布版本
+* V1.1  2026-10-12  YYH   补充文件头与函数注释
+* V1.2  2026-10-12  YYH   按 MISRA 改码
+```
+
+应合并为：
+
+```c
+* 修订记录 :
+* V1.0  未知        未知  初始发布版本
+* V1.1  2026-10-12  YYH   补充文件头与函数注释；按 MISRA 改码
+```
+
+文件头「版    本」仍是 `V1.1`，「日    期」仍是 `2026-10-12`。隔日再改，才追加 `V1.2`。
+
 ## 公开函数命名
 
 公开函数：模块前缀 + `_` + 每个单词首字母大写。读 ADC 的任务函数写成 `Adc_ReadTask`，不要写成 `Adc_Read_Task`。
 
-### 只加注释：不改名
+`@aeas` 默认就会改本轮处理文件里不合规的公开函数名，并按 MISRA 改码，然后再补注释。`static` 函数不在改名范围内。不要跑到未涉及的文件里顺手改名。
 
-对话：`@art 给 adc_read_task 补注释`
+### 写代码：新公开函数按 AUTOSAR Classic，写完代码再加注释
 
-```c
-/*
----------------------------------------------------------------------------------------------------
-* Service Name: adc_read_task
-* Description : 周期读取 ADC 采样结果
-* Arguments   : None
-* Return Value: None
-* Author      : YYH
----------------------------------------------------------------------------------------------------
-*/
-void adc_read_task(void)
-{
-    /* a. 启动转换并读回结果 */
-}
-```
+对话：`@aeas 写一个读 ADC 的任务函数`
 
-### 写代码并套用注释标准：新函数按 AUTOSAR Classic
-
-对话：`@art 写一个读 ADC 的任务函数`
+先写出（或改到）符合命名和 MISRA 的函数，再补注释：
 
 ```c
 /*
@@ -164,13 +176,11 @@ void Adc_ReadTask(void)
 }
 ```
 
-同文件里已有的 `adc_read_task` 不是这次要写的函数，保持原名。
+### 已有代码：先改名和 MISRA，再补注释
 
-### @ArtStd：加注释时也改公开函数名
+对话：`@aeas 给 adc_read_task 补注释`
 
-`@ArtStd`、`/ArtStd`、`@artstd`、`/artstd`、`@art_std`、`/art_std` 是同一条指令，大小写不限。对话：`@ArtStd 给 adc_read_task 补注释`
-
-定义、声明和调用一起改，Service Name 用新名字：
+不要保留 `adc_read_task` 这个原名。定义、声明和本轮改动范围内的调用一起改，Service Name 用新名字。注释放在代码改完之后写：
 
 ```c
 void Adc_ReadTask(void);
